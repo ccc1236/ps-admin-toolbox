@@ -1,4 +1,41 @@
-# Interactive folders-only tree map with custom depth and save location
+<#
+.SYNOPSIS
+    Interactive folders-only tree map with custom depth and save location.
+
+.DESCRIPTION
+    Prompts for a target path, recursion depth, and output directory/filename,
+    then writes a folders-only tree view to a text file. Files are ignored;
+    only directories are listed. Uses plain ASCII characters so output is
+    portable across consoles and encodings.
+
+.EXAMPLE
+    .\Get-FolderTree.ps1
+    (interactive — answers prompts for path, depth, output directory, filename)
+
+.VERSION
+    1.1
+
+.AUTHOR
+    ccc1236
+
+.LASTUPDATED
+    2026-04-15
+
+.CHANGELOG
+    v1.1 (2026-04-15):
+      - Replaced Unicode box-drawing and emoji characters with ASCII for
+        cross-encoding compatibility (fixes parser errors on Windows
+        PowerShell 5.1 when file is UTF-8 without BOM)
+      - Wrapped Get-ChildItem result in @() so .Count works when only one
+        subfolder is returned
+
+    v1.0:
+      - Initial release
+
+.NOTES
+    Compatible with Windows PowerShell 5.1 and PowerShell 7+.
+    No external modules required.
+#>
 
 Function Show-Tree {
     param(
@@ -12,7 +49,7 @@ Function Show-Tree {
 
     if ($CurrentDepth -ge $MaxDepth) { return }
 
-    $folders = Get-ChildItem -Path $Path -Directory -ErrorAction SilentlyContinue
+    $folders = @(Get-ChildItem -Path $Path -Directory -ErrorAction SilentlyContinue)
     $lastIndex = $folders.Count - 1
 
     for ($i = 0; $i -lt $folders.Count; $i++) {
@@ -20,11 +57,11 @@ Function Show-Tree {
         if ($null -eq $folder) { continue }
 
         if ($i -eq $lastIndex) {
-            Write-Output "$Indent└─ $($folder.Name)"
+            Write-Output "$Indent\- $($folder.Name)"
             Show-Tree -Path $folder.FullName -MaxDepth $MaxDepth -CurrentDepth ($CurrentDepth + 1) -Indent ("$Indent   ")
         } else {
-            Write-Output "$Indent├─ $($folder.Name)"
-            Show-Tree -Path $folder.FullName -MaxDepth $MaxDepth -CurrentDepth ($CurrentDepth + 1) -Indent ("$Indent│  ")
+            Write-Output "$Indent|- $($folder.Name)"
+            Show-Tree -Path $folder.FullName -MaxDepth $MaxDepth -CurrentDepth ($CurrentDepth + 1) -Indent ("$Indent|  ")
         }
     }
 }
@@ -35,7 +72,7 @@ do {
     $targetPath = Read-Host 'Enter the drive or folder to scan (e.g. C:\ or D:\Shared)'
     if ([string]::IsNullOrWhiteSpace($targetPath)) { continue }
     $isValid = Test-Path -Path $targetPath -PathType Container
-    if (-not $isValid) { Write-Host "❌ Path not found or not a folder. Try again." -ForegroundColor Red }
+    if (-not $isValid) { Write-Host "[X] Path not found or not a folder. Try again." -ForegroundColor Red }
 } until ($isValid)
 
 # 2) Depth (default 3)
@@ -53,7 +90,7 @@ if (-not (Test-Path -Path $outDir -PathType Container)) {
     try {
         New-Item -ItemType Directory -Path $outDir -Force | Out-Null
     } catch {
-        Write-Host "❌ Cannot create output directory at $outDir. Exiting." -ForegroundColor Red
+        Write-Host "[X] Cannot create output directory at $outDir. Exiting." -ForegroundColor Red
         return
     }
 }
@@ -86,4 +123,4 @@ try {
 @($resolved) + (Show-Tree -Path $targetPath -MaxDepth $maxDepth) |
     Out-File -FilePath $outFile -Encoding utf8
 
-Write-Host "✅ Saved tree to: $outFile" -ForegroundColor Green
+Write-Host "[OK] Saved tree to: $outFile" -ForegroundColor Green
