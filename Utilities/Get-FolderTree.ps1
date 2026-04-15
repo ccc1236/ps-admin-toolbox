@@ -10,7 +10,7 @@
 
 .EXAMPLE
     .\Get-FolderTree.ps1
-    (interactive — answers prompts for path, depth, output directory, filename)
+    (interactive - answers prompts for path, depth, output directory, filename)
 
 .VERSION
     1.1
