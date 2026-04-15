@@ -107,9 +107,9 @@ Write-Log "Connecting to Microsoft Graph (tenant: $TenantId)..."
 Connect-MgGraph -TenantId $TenantId -Scopes 'AuditLog.Read.All','Directory.Read.All' -NoWelcome
 
 # =============================================================================
-# Check #3 — Entra ID sign-in failures / anomalies
+# Check — Entra ID sign-in failures / anomalies
 # =============================================================================
-Write-Log "=== Check #3: Entra ID sign-in logs (last $SignInLookbackDays day(s)) ==="
+Write-Log "=== Entra ID sign-in logs (last $SignInLookbackDays day(s)) ==="
 
 $startDate = (Get-Date).AddDays(-$SignInLookbackDays).ToString('yyyy-MM-ddTHH:mm:ssZ')
 $filter    = "createdDateTime ge $startDate and (status/errorCode ne 0 or riskLevelDuringSignIn ne 'none')"
@@ -150,7 +150,7 @@ if ($signInReport.Count -gt 0) {
 }
 
 Write-Log "=== Summary ==="
-Write-Log ("  #3 Risky/failed sign-ins : {0}" -f $signInReport.Count)
+Write-Log ("  Risky/failed sign-ins : {0}" -f $signInReport.Count)
 Write-Log ("Reports saved to: {0}" -f $reportDir)
 
 Disconnect-MgGraph | Out-Null
