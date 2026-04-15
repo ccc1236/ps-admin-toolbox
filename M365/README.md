@@ -56,6 +56,9 @@ See `tenants/example.json` for a template. The filename (minus `.json`) is what 
 
 # Custom output location
 .\Invoke-M365MonitoringChecks.ps1 -Tenant contoso -OutputPath C:\Reports\M365
+
+# Insider-threat mode: flag ALL forwarding (internal + external), not just external
+.\Invoke-M365MonitoringChecks.ps1 -Tenant contoso -IncludeInternal
 ```
 
 The inbox rule check uses a per-tenant baseline (`baseline-inboxrules.json`). The **first run** establishes the baseline; **subsequent runs** flag new rules added since the last run and refresh the baseline.
