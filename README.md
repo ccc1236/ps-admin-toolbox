@@ -9,7 +9,7 @@ A curated collection of PowerShell scripts I use for day-to-day Windows / M365 /
 | [ActiveDirectory](./ActiveDirectory) | `ADEnhancedHealthCheck.ps1` | Comprehensive AD domain controller health check with enhanced HTML report |
 | [HyperV](./HyperV) | `Get-HyperVClusterInventory.ps1` | Inventory all VMs in a Hyper-V cluster (one row per VHD) and export to Excel |
 | [M365](./M365) | `Invoke-M365MonitoringChecks.ps1` | Exchange Online monitoring — external auto-forwarding + new inbox rule delta detection (multi-tenant) |
-| [EntraID](./EntraID) | `Invoke-SignInCheck.ps1` | Entra ID sign-in anomaly check via Microsoft Graph (multi-tenant) |
+| [M365](./M365) | `Invoke-SignInCheck.ps1` | Entra ID sign-in anomaly check via Microsoft Graph (multi-tenant) |
 | [Utilities](./Utilities) | `Get-FolderTree.ps1` | Interactive folders-only tree map with custom depth |
 
 ## Requirements
