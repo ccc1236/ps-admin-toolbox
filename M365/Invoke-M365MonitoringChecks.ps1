@@ -11,7 +11,7 @@
     tenants and writes a report per tenant.
 
     Run this in its OWN PowerShell session. Do not also load Microsoft.Graph
-    modules in the same session — MSAL assembly conflicts will break EXO.
+    modules in the same session - MSAL assembly conflicts will break EXO.
     Run the Graph-based sign-in check (Invoke-SignInCheck.ps1) in a separate
     PowerShell window.
 
@@ -122,10 +122,10 @@ Write-Log "Connecting to Exchange Online as $AdminUpn..."
 Connect-ExchangeOnline -UserPrincipalName $AdminUpn -ShowBanner:$false
 
 # =============================================================================
-# Check — Mailbox auto-forwarding (external by default; all when -IncludeInternal)
+# Check - Mailbox auto-forwarding (external by default; all when -IncludeInternal)
 # =============================================================================
 $scopeLabel = if ($IncludeInternal) { 'all auto-forwarding (internal + external)' } else { 'external auto-forwarding' }
-Write-Log "=== Mailbox auto-forwarding rules — scanning: $scopeLabel ==="
+Write-Log "=== Mailbox auto-forwarding rules - scanning: $scopeLabel ==="
 
 $acceptedDomains = (Get-AcceptedDomain).DomainName
 Write-Log ("Accepted domains: {0}" -f ($acceptedDomains -join ', '))
@@ -225,7 +225,7 @@ if ($forwardingHits.Count -gt 0) {
 }
 
 # =============================================================================
-# Check — New inbox rules (delta vs baseline)
+# Check - New inbox rules (delta vs baseline)
 # =============================================================================
 Write-Log "=== New inbox rules (delta detection) ==="
 
