@@ -105,9 +105,9 @@ Write-Log "Connecting to Exchange Online as $AdminUpn..."
 Connect-ExchangeOnline -UserPrincipalName $AdminUpn -ShowBanner:$false
 
 # =============================================================================
-# Check #14 — Mailbox auto-forwarding to external addresses
+# Check — Mailbox auto-forwarding to external addresses
 # =============================================================================
-Write-Log "=== Check #14: Mailbox auto-forwarding rules ==="
+Write-Log "=== Mailbox auto-forwarding rules ==="
 
 $acceptedDomains = (Get-AcceptedDomain).DomainName
 Write-Log ("Accepted domains: {0}" -f ($acceptedDomains -join ', '))
@@ -187,9 +187,9 @@ if ($forwardingHits.Count -gt 0) {
 }
 
 # =============================================================================
-# Check #15 — New inbox rules (delta vs baseline)
+# Check — New inbox rules (delta vs baseline)
 # =============================================================================
-Write-Log "=== Check #15: New inbox rules (delta detection) ==="
+Write-Log "=== New inbox rules (delta detection) ==="
 
 $currentRules = New-Object System.Collections.Generic.List[object]
 foreach ($mbx in $mailboxes) {
