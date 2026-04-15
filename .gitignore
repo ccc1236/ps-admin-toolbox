@@ -1,0 +1,196 @@
+# ---------------------------------------------------------------------------
+# Secrets / credentials
+# ---------------------------------------------------------------------------
+*.pfx
+*.cer
+*.crt
+*.key
+*.pem
+*.p12
+*.pub
+*.priv
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+known_hosts
+authorized_keys
+
+# Environment / config with secrets
+.env
+.env.*
+!.env.example
+secrets.json
+credentials.json
+config.local.*
+*.local.json
+appsettings.*.json
+!appsettings.Example.json
+
+# Exported credential / secure string files
+*.cred
+*.credential
+
+# ---------------------------------------------------------------------------
+# Tenant profiles — keep the example, ignore everything else
+# ---------------------------------------------------------------------------
+tenants/*.json
+!tenants/example.json
+
+# ---------------------------------------------------------------------------
+# Script output / generated artifacts
+# ---------------------------------------------------------------------------
+**/baseline-*.json
+**/reports/
+*.log
+VM-Inventory.xlsx
+*.xlsx
+*.html
+*.csv
+
+# ---------------------------------------------------------------------------
+# Blockchain / crypto wallets & keys
+# ---------------------------------------------------------------------------
+wallet.dat
+*.wallet
+keystore/
+keystores/
+UTC--*               # Ethereum keystore files
+mnemonic.txt
+seed.txt
+seedphrase.txt
+*.seed
+*.mnemonic
+hardhat.config.local.*
+.secret
+.mnemonic
+
+# ---------------------------------------------------------------------------
+# Test output
+# ---------------------------------------------------------------------------
+TestResults/
+coverage.xml
+coverage/
+*.trx
+
+# ---------------------------------------------------------------------------
+# PowerShell artifacts
+# ---------------------------------------------------------------------------
+*.ps1xml
+*.psproj.user
+
+# ---------------------------------------------------------------------------
+# Editors / IDEs
+# ---------------------------------------------------------------------------
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.shared.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ---------------------------------------------------------------------------
+# OS junk
+# ---------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Python virtual environments
+venv/
+.venv/
+env/
+ENV/
+.env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Python tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+.ipynb_checkpoints
+
+# ---------------------------------------------------------------------------
+# Node / JavaScript
+# ---------------------------------------------------------------------------
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.npm
+.yarn/
+.pnp.*
+package-lock.json.bak
+
+# ---------------------------------------------------------------------------
+# Build / compile artifacts
+# ---------------------------------------------------------------------------
+bin/
+obj/
+out/
+target/
+*.o
+*.a
+*.dll
+*.exe
+*.pdb
+*.class
+
+# ---------------------------------------------------------------------------
+# Archives (usually shouldn't be in a repo)
+# ---------------------------------------------------------------------------
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
+
+# ---------------------------------------------------------------------------
+# Common catch-alls
+# ---------------------------------------------------------------------------
+*.bak
+*.backup
+*.tmp
+*.temp
+*.old
+*.orig
