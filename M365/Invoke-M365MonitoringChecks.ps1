@@ -3,6 +3,7 @@
     Exchange Online security monitoring checks (multi-tenant).
     Detects:
       - Mailboxes with auto-forwarding to external addresses
+        (use -IncludeInternal to also flag internal forwarding)
       - Newly created end-user inbox rules (delta detection against a baseline)
 
 .DESCRIPTION
@@ -25,12 +26,21 @@
 .PARAMETER OutputPath
     Directory for reports and baseline. Defaults to .\reports\<tenant>\.
 
+.PARAMETER IncludeInternal
+    If specified, flags ALL auto-forwarding configurations (internal + external).
+    Default behavior flags only forwarding to addresses outside accepted domains.
+    Useful for insider-threat investigations.
+
 .EXAMPLE
     .\Invoke-M365MonitoringChecks.ps1 -Tenant contoso
+
+.EXAMPLE
+    # Flag any forwarding, not just external
+    .\Invoke-M365MonitoringChecks.ps1 -Tenant contoso -IncludeInternal
     .\Invoke-M365MonitoringChecks.ps1 -Tenant home
 
 .VERSION
-    1.0
+    1.1
 
 .AUTHOR
     ccc1236
@@ -39,6 +49,12 @@
     2026-04-15
 
 .CHANGELOG
+    v1.1 (2026-04-15):
+      - Added -IncludeInternal switch to optionally flag internal auto-forwarding
+        (insider-threat mode). Default behavior unchanged: external-only.
+      - Report output now tags each hit with EXTERNAL or internal
+      - CSV output file name reflects scope (external-forwarding vs forwarding-all)
+
     v1.0 (2026-04-15):
       - Initial release: external auto-forwarding detection and new inbox rule delta detection
 
@@ -53,7 +69,8 @@
 param(
     [Parameter(Mandatory=$true)]
     [string]$Tenant,
-    [string]$OutputPath
+    [string]$OutputPath,
+    [switch]$IncludeInternal
 )
 
 # --- Load tenant profile ---------------------------------------------------
@@ -105,9 +122,10 @@ Write-Log "Connecting to Exchange Online as $AdminUpn..."
 Connect-ExchangeOnline -UserPrincipalName $AdminUpn -ShowBanner:$false
 
 # =============================================================================
-# Check — Mailbox auto-forwarding to external addresses
+# Check — Mailbox auto-forwarding (external by default; all when -IncludeInternal)
 # =============================================================================
-Write-Log "=== Mailbox auto-forwarding rules ==="
+$scopeLabel = if ($IncludeInternal) { 'all auto-forwarding (internal + external)' } else { 'external auto-forwarding' }
+Write-Log "=== Mailbox auto-forwarding rules — scanning: $scopeLabel ==="
 
 $acceptedDomains = (Get-AcceptedDomain).DomainName
 Write-Log ("Accepted domains: {0}" -f ($acceptedDomains -join ', '))
@@ -121,6 +139,12 @@ function Test-IsExternal {
     return ($acceptedDomains -notcontains $domain)
 }
 
+function Test-ShouldFlag {
+    param([string]$Address)
+    if ($IncludeInternal) { return -not [string]::IsNullOrWhiteSpace($Address) }
+    return (Test-IsExternal $Address)
+}
+
 $forwardingHits = New-Object System.Collections.Generic.List[object]
 
 Write-Log "Scanning mailbox-level forwarding settings..."
@@ -131,11 +155,12 @@ foreach ($mbx in $mailboxes) {
     if ($mbx.ForwardingSmtpAddress) { $fwdTarget = $mbx.ForwardingSmtpAddress }
     elseif ($mbx.ForwardingAddress)  { $fwdTarget = $mbx.ForwardingAddress }
 
-    if ($fwdTarget -and (Test-IsExternal $fwdTarget)) {
+    if ($fwdTarget -and (Test-ShouldFlag $fwdTarget)) {
         $forwardingHits.Add([PSCustomObject]@{
             Source            = 'MailboxSetting'
             Mailbox           = $mbx.UserPrincipalName
             ForwardTo         = $fwdTarget
+            IsExternal        = (Test-IsExternal $fwdTarget)
             DeliverAndForward = $mbx.DeliverToMailboxAndForward
             RuleName          = $null
             RuleEnabled       = $null
@@ -154,19 +179,30 @@ foreach ($mbx in $mailboxes) {
         $targets += $rule.ForwardTo
         $targets += $rule.ForwardAsAttachmentTo
         $targets += $rule.RedirectTo
-        $externalTargets = $targets | Where-Object { $_ } | Where-Object {
+        $flaggedTargets = $targets | Where-Object { $_ } | Where-Object {
             $m = [regex]::Match($_, '\[SMTP:([^\]]+)\]|SMTP:([^\s;]+)|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+)')
             if ($m.Success) {
                 $addr = ($m.Groups[1].Value, $m.Groups[2].Value, $m.Groups[3].Value | Where-Object { $_ })[0]
-                Test-IsExternal $addr
-            } else { $false }
+                Test-ShouldFlag $addr
+            } elseif ($IncludeInternal) { $true } else { $false }
         }
 
-        if ($externalTargets.Count -gt 0) {
+        if ($flaggedTargets.Count -gt 0) {
+            # Determine if any flagged target is external (for reporting)
+            $anyExternal = $false
+            foreach ($t in $flaggedTargets) {
+                $m = [regex]::Match($t, '\[SMTP:([^\]]+)\]|SMTP:([^\s;]+)|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+)')
+                if ($m.Success) {
+                    $addr = ($m.Groups[1].Value, $m.Groups[2].Value, $m.Groups[3].Value | Where-Object { $_ })[0]
+                    if (Test-IsExternal $addr) { $anyExternal = $true; break }
+                }
+            }
+
             $forwardingHits.Add([PSCustomObject]@{
                 Source            = 'InboxRule'
                 Mailbox           = $mbx.UserPrincipalName
-                ForwardTo         = ($externalTargets -join '; ')
+                ForwardTo         = ($flaggedTargets -join '; ')
+                IsExternal        = $anyExternal
                 DeliverAndForward = $null
                 RuleName          = $rule.Name
                 RuleEnabled       = $rule.Enabled
@@ -175,15 +211,17 @@ foreach ($mbx in $mailboxes) {
     }
 }
 
-$fwdCsv = Join-Path $reportDir ("external-forwarding-{0}.csv" -f $runDate)
+$fwdFileLabel = if ($IncludeInternal) { 'forwarding-all' } else { 'external-forwarding' }
+$fwdCsv = Join-Path $reportDir ("{0}-{1}.csv" -f $fwdFileLabel, $runDate)
 if ($forwardingHits.Count -gt 0) {
     $forwardingHits | Export-Csv -Path $fwdCsv -NoTypeInformation -Encoding UTF8
-    Write-Log ("Found {0} external forwarding configuration(s) -> {1}" -f $forwardingHits.Count, $fwdCsv) 'WARN'
+    Write-Log ("Found {0} forwarding configuration(s) -> {1}" -f $forwardingHits.Count, $fwdCsv) 'WARN'
     $forwardingHits | ForEach-Object {
-        Write-Log ("  [{0}] {1} -> {2} (rule: {3})" -f $_.Source, $_.Mailbox, $_.ForwardTo, $_.RuleName)
+        $scope = if ($_.IsExternal) { 'EXTERNAL' } else { 'internal' }
+        Write-Log ("  [{0}/{1}] {2} -> {3} (rule: {4})" -f $_.Source, $scope, $_.Mailbox, $_.ForwardTo, $_.RuleName)
     }
 } else {
-    Write-Log "No external forwarding detected. Clean."
+    Write-Log "No forwarding matching the current scope detected. Clean."
 }
 
 # =============================================================================
@@ -244,7 +282,7 @@ if (-not (Test-Path $baselineFile)) {
 
 # --- Summary & disconnect --------------------------------------------------
 Write-Log "=== Summary ==="
-Write-Log ("  External forwarding : {0}" -f $forwardingHits.Count)
+Write-Log ("  Forwarding hits ({0}) : {1}" -f $scopeLabel, $forwardingHits.Count)
 Write-Log ("  New inbox rules     : {0}" -f $newRules.Count)
 Write-Log ("Reports saved to: {0}" -f $reportDir)
 
