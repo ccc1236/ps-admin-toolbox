@@ -171,7 +171,7 @@ $report = foreach ($node in $nodes) {
             }
         }
         else {
-            # VM has no disks — still include it in the report
+            # VM has no disks - still include it in the report
             [PSCustomObject]@{
                 'VM Name'        = $vm.Name
                 'Host'           = $node
