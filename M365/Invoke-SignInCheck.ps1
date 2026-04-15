@@ -8,7 +8,7 @@
     Writes a report per tenant.
 
     Run this in its OWN PowerShell session. Do not also load the
-    ExchangeOnlineManagement module in the same session — MSAL assembly
+    ExchangeOnlineManagement module in the same session - MSAL assembly
     conflicts will break Graph. Run the EXO checks
     (Invoke-M365MonitoringChecks.ps1) in a separate PowerShell window.
 
@@ -107,7 +107,7 @@ Write-Log "Connecting to Microsoft Graph (tenant: $TenantId)..."
 Connect-MgGraph -TenantId $TenantId -Scopes 'AuditLog.Read.All','Directory.Read.All' -NoWelcome
 
 # =============================================================================
-# Check — Entra ID sign-in failures / anomalies
+# Check - Entra ID sign-in failures / anomalies
 # =============================================================================
 Write-Log "=== Entra ID sign-in logs (last $SignInLookbackDays day(s)) ==="
 
