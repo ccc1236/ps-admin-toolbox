@@ -21,13 +21,22 @@ This script runs a set of diagnostics across all domain controllers in the curre
 Results are formatted into a visually enhanced HTML report for easy review and distribution.
 
 .VERSION
-1.4
+1.5
 
 .AUTHOR
-HS
+
 
 .LASTUPDATED
-2025-06-25
+2026-04-15
+
+.CHANGELOG
+v1.5 (2026-04-15):
+- Added ActiveDirectory module check on script startup
+- Fixed deprecated Select -ExpandProperty syntax for PowerShell 7+ compatibility
+- Improved error handling for module import failures
+
+v1.4 (2025-06-25):
+- Original version with comprehensive AD health checks
 
 .NOTES
 Run this script on a domain-joined machine with the Active Directory PowerShell module available.
@@ -45,6 +54,19 @@ param(
     [int]$TimeoutSeconds = 30,
     [int]$EventLogDays = 7
 )
+
+# Check for ActiveDirectory module
+if (-not (Get-Module -ListAvailable -Name ActiveDirectory)) {
+    Write-Error "ActiveDirectory PowerShell module is not installed. Install RSAT: Active Directory Domain Services and Lightweight Directory Services Tools."
+    exit 1
+}
+
+try {
+    Import-Module ActiveDirectory -ErrorAction Stop
+} catch {
+    Write-Error "Failed to import ActiveDirectory module: $($_.Exception.Message)"
+    exit 1
+}
 
 # Initialize variables
 $timestamp = Get-Date -Format "yyyy-MM-dd_HHmmss"
@@ -194,7 +216,7 @@ Function Get-DCUpTime($computername) {
     }
     
     if ($uptime.TotalHours -lt 100 ) {
-        $uptimeResult = [Math]::Round(($uptime | Select -ExpandProperty TotalHours),0,[MidPointRounding]::AwayFromZero)
+        $uptimeResult = [Math]::Round($uptime.TotalHours, 0, [MidPointRounding]::AwayFromZero)
         $uptimeResult = [string]$uptimeResult + " hrs"
 
         if ($uptime.TotalHours -lt 24 ) {
@@ -202,7 +224,7 @@ Function Get-DCUpTime($computername) {
             $uptimeResult = "Warning"
         }
     }else{
-        $uptimeResult = [Math]::Round(($uptime | Select -ExpandProperty TotalDays),0,[MidPointRounding]::AwayFromZero)
+        $uptimeResult = [Math]::Round($uptime.TotalDays, 0, [MidPointRounding]::AwayFromZero)
         $uptimeResult = [string]$uptimeResult + " days"
     }
     
@@ -294,7 +316,7 @@ function Get-TombstoneLifetime {
     try {
         # Get the tombstone lifetime from AD configuration
         $configNC = (Get-ADRootDSE).configurationNamingContext
-        $tombstoneLifetime = Get-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,$configNC" -Properties tombstoneLifetime | Select-Object -ExpandProperty tombstoneLifetime
+        $tombstoneLifetime = (Get-ADObject -Identity "CN=Directory Service,CN=Windows NT,CN=Services,$configNC" -Properties tombstoneLifetime).tombstoneLifetime
         
         # Default is 60 days if not set (Windows 2003 SP1 and later)
         if ($null -eq $tombstoneLifetime -or $tombstoneLifetime -eq 0) {
