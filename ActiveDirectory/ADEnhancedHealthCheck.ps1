@@ -24,7 +24,7 @@ Results are formatted into a visually enhanced HTML report for easy review and d
 1.5
 
 .AUTHOR
-ccc1236
+
 
 .LASTUPDATED
 2026-04-15
