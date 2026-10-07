@@ -8,6 +8,7 @@ Multi-tenant PowerShell scripts for routine Microsoft 365 and Entra ID (Azure AD
 | ------ | ------- |
 | `Invoke-M365MonitoringChecks.ps1` | Exchange Online checks: external auto-forwarding detection and new inbox rule delta detection (against a baseline). |
 | `Invoke-SignInCheck.ps1` | Entra ID sign-in log anomaly check via Microsoft Graph — flags risky sign-ins, failed MFA, unusual locations. |
+| `Disable-OfficeSharedComputerActivation.ps1` | Local fix, run elevated on the affected PC (not multi-tenant): turns off shared computer activation and clears cached Office licensing for every profile. Fixes "cannot be used to activate Office in shared computer scenarios" for users on plans without SCA (e.g. Business Standard). |
 
 Both scripts share the same `tenants/` profile schema but must be run in **separate PowerShell sessions** — the ExchangeOnlineManagement and Microsoft.Graph modules share MSAL assemblies that conflict when loaded together.
 
