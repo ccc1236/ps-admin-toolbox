@@ -25,20 +25,15 @@
     .\Invoke-SignInCheck.ps1 -Tenant contoso
     .\Invoke-SignInCheck.ps1 -Tenant home -SignInLookbackDays 7
 
-.VERSION
-    1.0
-
-.AUTHOR
-    ccc1236
-
-.LASTUPDATED
-    2026-04-15
-
-.CHANGELOG
-    v1.0 (2026-04-15):
-      - Initial release: Entra ID sign-in anomaly check via Microsoft Graph
-
 .NOTES
+    Version:      1.0
+    Author:       ccc1236
+    Last updated: 2026-04-15
+
+    Changelog:
+        v1.0 (2026-04-15):
+          - Initial release: Entra ID sign-in anomaly check via Microsoft Graph
+
     Required:
       Install-Module Microsoft.Graph.Authentication -Scope CurrentUser
       Install-Module Microsoft.Graph.Identity.SignIns -Scope CurrentUser

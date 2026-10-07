@@ -20,25 +20,20 @@ This script runs a set of diagnostics across all domain controllers in the curre
 
 Results are formatted into a visually enhanced HTML report for easy review and distribution.
 
-.VERSION
-1.5
-
-.AUTHOR
-
-
-.LASTUPDATED
-2026-04-15
-
-.CHANGELOG
-v1.5 (2026-04-15):
-- Added ActiveDirectory module check on script startup
-- Fixed deprecated Select -ExpandProperty syntax for PowerShell 7+ compatibility
-- Improved error handling for module import failures
-
-v1.4 (2025-06-25):
-- Original version with comprehensive AD health checks
-
 .NOTES
+Version:      1.5
+Author:
+Last updated: 2026-04-15
+
+Changelog:
+  v1.5 (2026-04-15):
+  - Added ActiveDirectory module check on script startup
+  - Fixed deprecated Select -ExpandProperty syntax for PowerShell 7+ compatibility
+  - Improved error handling for module import failures
+
+  v1.4 (2025-06-25):
+  - Original version with comprehensive AD health checks
+
 Run this script on a domain-joined machine with the Active Directory PowerShell module available.
 Running the script from a domain controller is recommended to get full results including `dcdiag` and `repadmin` output.
 

@@ -42,27 +42,22 @@
 .EXAMPLE
   .\Get-HyperVClusterInventory.ps1 -ClusterName HV-CL01 -OutputPath C:\Reports -OutputFile HV-CL01.xlsx
 
-.VERSION
-  1.1
-
-.AUTHOR
-  ccc1236
-
-.LASTUPDATED
-  2026-04-15
-
-.CHANGELOG
-  v1.1 (2026-04-15):
-    - Added CmdletBinding and parameters (-ClusterName, -OutputPath, -OutputFile, -InstallMissingModules)
-    - Added #Requires directive and Set-StrictMode
-    - Module auto-install is now opt-in via -InstallMissingModules
-    - Renamed output column "Type" -> "Controller Type" to match description
-    - OutputPath is created if it doesn't exist
-
-  v1.0:
-    - Initial release: inventory cluster VMs + VHDs, export to Excel
-
 .NOTES
+  Version:      1.1
+  Author:       ccc1236
+  Last updated: 2026-04-15
+
+  Changelog:
+    v1.1 (2026-04-15):
+      - Added CmdletBinding and parameters (-ClusterName, -OutputPath, -OutputFile, -InstallMissingModules)
+      - Added #Requires directive and Set-StrictMode
+      - Module auto-install is now opt-in via -InstallMissingModules
+      - Renamed output column "Type" -> "Controller Type" to match description
+      - OutputPath is created if it doesn't exist
+
+    v1.0:
+      - Initial release: inventory cluster VMs + VHDs, export to Excel
+
   Requires the following modules:
     - Hyper-V
     - FailoverClusters

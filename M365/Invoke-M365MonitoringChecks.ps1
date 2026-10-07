@@ -39,26 +39,21 @@
     .\Invoke-M365MonitoringChecks.ps1 -Tenant contoso -IncludeInternal
     .\Invoke-M365MonitoringChecks.ps1 -Tenant home
 
-.VERSION
-    1.1
-
-.AUTHOR
-    ccc1236
-
-.LASTUPDATED
-    2026-04-15
-
-.CHANGELOG
-    v1.1 (2026-04-15):
-      - Added -IncludeInternal switch to optionally flag internal auto-forwarding
-        (insider-threat mode). Default behavior unchanged: external-only.
-      - Report output now tags each hit with EXTERNAL or internal
-      - CSV output file name reflects scope (external-forwarding vs forwarding-all)
-
-    v1.0 (2026-04-15):
-      - Initial release: external auto-forwarding detection and new inbox rule delta detection
-
 .NOTES
+    Version:      1.1
+    Author:       ccc1236
+    Last updated: 2026-04-15
+
+    Changelog:
+        v1.1 (2026-04-15):
+          - Added -IncludeInternal switch to optionally flag internal auto-forwarding
+            (insider-threat mode). Default behavior unchanged: external-only.
+          - Report output now tags each hit with EXTERNAL or internal
+          - CSV output file name reflects scope (external-forwarding vs forwarding-all)
+
+        v1.0 (2026-04-15):
+          - Initial release: external auto-forwarding detection and new inbox rule delta detection
+
     Required: Install-Module ExchangeOnlineManagement -Scope CurrentUser
 
     Tenant profile schema (JSON):

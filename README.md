@@ -36,7 +36,8 @@ Run `Get-Help .\<Script>.ps1 -Full` for detailed help on any script.
 
 ## Contributing / notes to self
 
-- Bump the `.VERSION` and `.CHANGELOG` block at the top of a script when making changes — don't rename the file.
+- Bump the `Version`, `Last updated` and `Changelog` lines in the `.NOTES` section of a script's help block when making changes — don't rename the file.
+- Don't add custom help keywords (e.g. `.VERSION`, `.AUTHOR`): PowerShell rejects them and silently drops the whole help block, breaking `Get-Help`. Keep script help separated from a following `function` by two blank lines.
 - Keep secrets, tenant IDs, internal IPs, and hostnames out of committed code. Use parameters or a local `tenants\` / config file that's gitignored.
 - Prefer parameterized scripts over hardcoded values so they're reusable across environments.
 

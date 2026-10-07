@@ -12,30 +12,26 @@
     .\Get-FolderTree.ps1
     (interactive - answers prompts for path, depth, output directory, filename)
 
-.VERSION
-    1.1
-
-.AUTHOR
-    ccc1236
-
-.LASTUPDATED
-    2026-04-15
-
-.CHANGELOG
-    v1.1 (2026-04-15):
-      - Replaced Unicode box-drawing and emoji characters with ASCII for
-        cross-encoding compatibility (fixes parser errors on Windows
-        PowerShell 5.1 when file is UTF-8 without BOM)
-      - Wrapped Get-ChildItem result in @() so .Count works when only one
-        subfolder is returned
-
-    v1.0:
-      - Initial release
-
 .NOTES
+    Version:      1.1
+    Author:       ccc1236
+    Last updated: 2026-04-15
+
+    Changelog:
+        v1.1 (2026-04-15):
+          - Replaced Unicode box-drawing and emoji characters with ASCII for
+            cross-encoding compatibility (fixes parser errors on Windows
+            PowerShell 5.1 when file is UTF-8 without BOM)
+          - Wrapped Get-ChildItem result in @() so .Count works when only one
+            subfolder is returned
+
+        v1.0:
+          - Initial release
+
     Compatible with Windows PowerShell 5.1 and PowerShell 7+.
     No external modules required.
 #>
+
 
 Function Show-Tree {
     param(

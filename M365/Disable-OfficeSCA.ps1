@@ -40,20 +40,15 @@
     .\Disable-OfficeSCA.ps1
     .\Disable-OfficeSCA.ps1 -Reboot
 
-.VERSION
-    1.0
-
-.AUTHOR
-    ccc1236
-
-.LASTUPDATED
-    2026-10-07
-
-.CHANGELOG
-    v1.0 (2026-10-07):
-      - Initial release
-
 .NOTES
+    Version:      1.0
+    Author:       ccc1236
+    Last updated: 2026-10-07
+
+    Changelog:
+        v1.0 (2026-10-07):
+          - Initial release
+
     Must run elevated (local administrator).
     Compatible with Windows PowerShell 5.1 and PowerShell 7+.
     No external modules required. Click-to-Run Office only.
