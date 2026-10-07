@@ -10,7 +10,7 @@ A curated collection of PowerShell scripts I use for day-to-day Windows / M365 /
 | [HyperV](./HyperV) | `Get-HyperVClusterInventory.ps1` | Inventory all VMs in a Hyper-V cluster (one row per VHD) and export to Excel |
 | [M365](./M365) | `Invoke-M365MonitoringChecks.ps1` | Exchange Online monitoring — external auto-forwarding + new inbox rule delta detection (multi-tenant) |
 | [M365](./M365) | `Invoke-SignInCheck.ps1` | Entra ID sign-in anomaly check via Microsoft Graph (multi-tenant) |
-| [M365](./M365) | `Disable-OfficeSharedComputerActivation.ps1` | Switch Microsoft 365 Apps on a PC from shared computer activation to per-user activation and clear cached Office licensing (run on the PC, elevated) |
+| [M365](./M365) | `Disable-OfficeSCA.ps1` | Switch Microsoft 365 Apps on a PC from shared computer activation to per-user activation and clear cached Office licensing (run on the PC, elevated) |
 | [Utilities](./Utilities) | `Get-FolderTree.ps1` | Interactive folders-only tree map with custom depth |
 
 ## Requirements

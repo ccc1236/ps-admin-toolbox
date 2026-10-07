@@ -37,8 +37,8 @@
     Restart the computer when finished. Without it, reboot manually.
 
 .EXAMPLE
-    .\Disable-OfficeSharedComputerActivation.ps1
-    .\Disable-OfficeSharedComputerActivation.ps1 -Reboot
+    .\Disable-OfficeSCA.ps1
+    .\Disable-OfficeSCA.ps1 -Reboot
 
 .VERSION
     1.0
